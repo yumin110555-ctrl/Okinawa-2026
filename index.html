@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>沖繩行程 2026</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>沖繩之旅 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -12,226 +12,183 @@
     <style>
         body {
             font-family: 'Noto Sans JP', sans-serif;
-            background-color: #F0F7FA;
+            background-color: #F8FDFF;
             -webkit-tap-highlight-color: transparent;
         }
+        .font-times { font-family: 'Times New Roman', serif; }
         .okinawa-blue { color: #0088BC; }
         .bg-okinawa-blue { background-color: #0088BC; }
-        .font-times { font-family: 'Times New Roman', serif; }
         
+        /* 日系海浪底圖樣式 */
+        .header-wave {
+            background-color: #E0F2FE;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40' viewBox='0 0 80 40'%3E%3Cpath d='M0 40 C 20 40 20 20 40 20 C 60 20 60 40 80 40' fill='none' stroke='%230088BC' stroke-width='1' opacity='0.2'/%3E%3C/svg%3E");
+        }
+
         /* 隱藏滾動條 */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
         .tab-active {
             color: #0088BC;
-            border-bottom: 3px solid #0088BC;
+            border-bottom: 4px solid #0088BC;
         }
 
-        .flight-card {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        /* 航班特殊卡片 */
+        .flight-gradient {
+            background: linear-gradient(135deg, #075985 0%, #0c4a6e 100%);
             color: white;
         }
     </style>
 </head>
-<body class="text-slate-700">
+<body class="text-slate-800">
 
-<div id="app" class="max-w-md mx-auto min-h-screen bg-white shadow-xl flex flex-col relative">
+<div id="app" class="max-w-md mx-auto min-h-screen bg-white shadow-2xl flex flex-col relative">
     
-    <header class="pt-8 pb-2 px-6 bg-white border-b sticky top-0 z-40">
-        <div class="text-center mb-4">
-            <p class="text-xs font-times okinawa-blue tracking-widest">2026</p>
-            <p class="text-lg font-times okinawa-blue font-bold">04.30 ~ 05.04</p>
-            <h1 class="text-2xl font-bold tracking-tight mt-1 text-slate-800">日本沖繩</h1>
+    <header class="header-wave pt-10 pb-4 px-6 border-b">
+        <div class="text-center mb-6">
+            <p class="text-xl font-times okinawa-blue tracking-tighter">2026</p>
+            <p class="text-2xl font-times okinawa-blue font-bold">04.30 ~ 05.04</p>
+            <h1 class="text-4xl font-black tracking-tight mt-2 text-slate-800">日本沖繩</h1>
         </div>
 
-        <nav class="flex justify-around items-center mt-4">
-            <button @click="activeTab = 'itinerary'" :class="{'tab-active': activeTab === 'itinerary'}" class="pb-2 flex flex-col items-center flex-1">
-                <i data-lucide="map-pin" class="w-6 h-6"></i>
-                <span class="text-[11px] mt-1 font-bold">行程</span>
+        <nav class="flex justify-around items-center bg-white/80 backdrop-blur rounded-2xl p-2 shadow-sm">
+            <button @click="activeTab = 'itinerary'" :class="{'tab-active': activeTab === 'itinerary'}" class="pb-2 flex flex-col items-center flex-1 transition-all">
+                <i data-lucide="map-pin" class="w-8 h-8"></i>
+                <span class="text-base mt-1 font-bold">行程</span>
             </button>
-            <button @click="activeTab = 'info'" :class="{'tab-active': activeTab === 'info'}" class="pb-2 flex flex-col items-center flex-1">
-                <i data-lucide="info" class="w-6 h-6"></i>
-                <span class="text-[11px] mt-1 font-bold">資訊</span>
-            </button>
-            <button @click="activeTab = 'expense'" :class="{'tab-active': activeTab === 'expense'}" class="pb-2 flex flex-col items-center flex-1">
-                <i data-lucide="coins" class="w-6 h-6"></i>
-                <span class="text-[11px] mt-1 font-bold">花費</span>
+            <button @click="activeTab = 'info'" :class="{'tab-active': activeTab === 'info'}" class="pb-2 flex flex-col items-center flex-1 transition-all">
+                <i data-lucide="info" class="w-8 h-8"></i>
+                <span class="text-base mt-1 font-bold">資訊</span>
             </button>
         </nav>
     </header>
 
-    <main class="flex-grow">
-        
+    <main class="flex-grow pb-12">
         <section v-if="activeTab === 'itinerary'">
-            <div class="flex overflow-x-auto py-4 px-4 gap-4 no-scrollbar bg-sky-50/50 border-b">
+            <div class="flex overflow-x-auto py-6 px-4 gap-4 no-scrollbar bg-slate-50 border-b">
                 <div v-for="day in days" :key="day.date" 
                      @click="selectedDay = day.date"
-                     :class="selectedDay === day.date ? 'bg-okinawa-blue text-white shadow-md' : 'bg-white text-slate-400'"
-                     class="flex-shrink-0 w-14 h-16 rounded-2xl flex flex-col items-center justify-center transition-all cursor-pointer">
-                    <span class="text-sm font-bold">{{ day.weekday }}</span>
-                    <span class="text-[10px] font-times">{{ day.dateShort }}</span>
+                     :class="selectedDay === day.date ? 'bg-okinawa-blue text-white shadow-lg scale-110' : 'bg-white text-slate-400'"
+                     class="flex-shrink-0 w-16 h-20 rounded-2xl flex flex-col items-center justify-center transition-all duration-300 cursor-pointer border">
+                    <span class="text-xl font-black">{{ day.weekday }}</span>
+                    <span class="text-sm font-times font-bold">{{ day.dateShort }}</span>
                 </div>
             </div>
 
-            <div class="mx-6 mt-4 p-3 bg-blue-50/50 rounded-xl flex items-center justify-between border border-blue-100">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="sun" class="text-orange-400 w-6 h-6"></i>
-                    <span class="text-xs font-bold text-slate-600">24°C / 體感 22°C</span>
-                </div>
-                <span class="text-[10px] text-slate-400 font-bold">沖繩 · 晴時多雲</span>
-            </div>
-
-            <div class="px-5 mt-6 space-y-4 pb-10">
+            <div class="px-5 mt-6 space-y-2">
                 <div v-for="(item, index) in filteredItinerary" :key="item.id">
                     
-                    <div v-if="item.travelTimeLabel" class="flex items-center gap-2 py-3 ml-12 text-[10px] font-bold text-slate-400">
-                        <i :data-lucide="item.travelMode === 'walk' ? 'walking' : 'car'" class="w-3.5 h-3.5"></i>
-                        <span>{{ item.travelTimeLabel }}</span>
+                    <div v-if="item.travelTime" class="flex items-center gap-3 py-4 ml-12 border-l-2 border-dashed border-slate-200 pl-6">
+                        <div class="p-1.5 bg-slate-100 rounded-full">
+                            <i :data-lucide="item.travelIcon" class="w-5 h-5 text-slate-500"></i>
+                        </div>
+                        <span class="text-base font-bold text-slate-500">{{ item.travelTime }}</span>
                     </div>
 
-                    <div class="flex gap-3">
-                        <div class="flex flex-col items-center w-12 pt-1">
-                            <div class="p-2 bg-sky-100 rounded-full mb-1">
-                                <i :data-lucide="getIcon(item.type)" class="w-4 h-4 okinawa-blue"></i>
+                    <div v-if="item.isFlightSummary" class="flight-gradient p-6 rounded-[2rem] shadow-xl my-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm opacity-80">{{ item.airline }} · {{ item.flightNo }}</span>
+                            <i data-lucide="plane" class="w-6 h-6"></i>
+                        </div>
+                        <div class="flex justify-between items-end">
+                            <h3 class="text-4xl font-black font-times tracking-tighter">{{ item.title }}</h3>
+                            <div class="text-right">
+                                <p class="text-xl font-bold font-times">{{ item.timeRange }}</p>
                             </div>
-                            <span class="text-[10px] font-times font-bold text-slate-500">{{ item.arrivalTime }}</span>
+                        </div>
+                    </div>
+
+                    <div v-else class="flex gap-4">
+                        <div class="flex flex-col items-center w-14 pt-2">
+                            <div :class="getIconBg(item.type)" class="p-3 rounded-full shadow-md">
+                                <i :data-lucide="getIcon(item.type)" class="w-6 h-6 text-white"></i>
+                            </div>
+                            <span class="text-sm font-times font-black mt-2 text-slate-600">{{ item.arrivalTime }}</span>
                         </div>
 
-                        <div :class="item.type.includes('flight') ? 'flight-card' : 'bg-white border'" 
-                             class="flex-grow p-4 rounded-2xl shadow-sm flex justify-between items-center relative">
-                            
+                        <div class="flex-grow bg-white border-2 border-slate-100 p-5 rounded-[1.8rem] shadow-sm flex justify-between items-center active:bg-slate-50 transition-colors">
                             <div class="flex-grow pr-2">
-                                <div v-if="item.type.includes('flight')" class="flex items-center justify-between">
-                                    <div class="flex flex-col">
-                                        <span class="text-2xl font-bold font-times tracking-tighter">{{ item.title }}</span>
-                                        <span class="text-[10px] opacity-70">{{ item.note }}</span>
-                                    </div>
-                                    <i data-lucide="plane" class="w-6 h-6 opacity-30"></i>
-                                </div>
-                                <div v-else>
-                                    <h3 class="font-bold text-sm text-slate-800">{{ item.title }}</h3>
-                                    <p class="text-[10px] text-slate-400 mt-1 leading-relaxed">{{ item.note }}</p>
-                                </div>
+                                <h3 class="text-xl font-black text-slate-800">{{ item.title }}</h3>
+                                <p v-if="item.note" class="text-base text-slate-500 mt-1 font-medium">{{ item.note }}</p>
                             </div>
-
-                            <div class="flex flex-col gap-2 border-l pl-3">
-                                <button @click="openEditModal(item)" class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 border border-slate-100">
-                                    <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
-                                </button>
-                                <button @click="openNav(item.title)" class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 border border-blue-100">
-                                    <i data-lucide="navigation" class="w-3.5 h-3.5"></i>
-                                </button>
-                            </div>
+                            <button @click="openNav(item.title)" class="w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 border border-blue-100 shadow-sm shrink-0">
+                                <i data-lucide="navigation" class="w-7 h-7"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section v-if="activeTab === 'info'" class="px-6 py-6 space-y-6">
-            <div class="bg-white border rounded-2xl p-5 shadow-sm">
-                <h2 class="font-bold text-okinawa-blue flex items-center gap-2 mb-4 border-b pb-2">
-                    <i data-lucide="plane" class="w-5 h-5"></i> 航班明細
+        <section v-if="activeTab === 'info'" class="px-6 py-8 space-y-8">
+            <div class="bg-white border-2 border-slate-100 rounded-[2rem] p-6 shadow-sm">
+                <h2 class="text-2xl font-black okinawa-blue flex items-center gap-3 mb-6">
+                    <i data-lucide="plane" class="w-8 h-8"></i> 航班明細
                 </h2>
-                <div class="space-y-4 text-xs">
-                    <div class="flex justify-between border-b border-dashed pb-2">
-                        <span>4/30 去程 (TPE-OKA)</span>
-                        <span class="font-bold">18:05 - 20:50 | MM930</span>
+                <div class="space-y-6">
+                    <div class="border-l-4 border-okinawa-blue pl-4">
+                        <p class="text-sm text-slate-400 font-bold uppercase">去程 4/30</p>
+                        <p class="text-xl font-black">TPE → OKA</p>
+                        <p class="text-lg font-times font-bold text-slate-600">18:05 - 20:50 | 樂桃 MM930</p>
                     </div>
-                    <div class="flex justify-between">
-                        <span>5/04 回程 (OKA-TPE)</span>
-                        <span class="font-bold">08:10 - 08:45 | MM921</span>
+                    <div class="border-l-4 border-slate-300 pl-4">
+                        <p class="text-sm text-slate-400 font-bold uppercase">回程 5/4</p>
+                        <p class="text-xl font-black">OKA → TPE</p>
+                        <p class="text-lg font-times font-bold text-slate-600">08:10 - 08:45 | 樂桃 MM921</p>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white border rounded-2xl p-5 shadow-sm">
-                <h2 class="font-bold text-okinawa-blue flex items-center gap-2 mb-4 border-b pb-2">
-                    <i data-lucide="car" class="w-5 h-5"></i> 租車資訊
+            <div class="bg-white border-2 border-slate-100 rounded-[2rem] p-6 shadow-sm">
+                <h2 class="text-2xl font-black okinawa-blue flex items-center gap-3 mb-6">
+                    <i data-lucide="car" class="w-8 h-8"></i> 租車資訊
                 </h2>
-                <div class="text-xs space-y-2">
-                    <p class="font-bold">FLIGHT RENTACAR</p>
-                    <p>租：5/1 08:00 | 還：5/3 19:00</p>
-                    <div class="mt-3 p-3 bg-amber-50 rounded-xl text-amber-700 font-bold border border-amber-100">
-                        提醒：請務必攜帶護照、駕照正本、駕照日文譯本。
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white border rounded-2xl p-5 shadow-sm">
-                <h2 class="font-bold text-okinawa-blue flex items-center gap-2 mb-4 border-b pb-2">
-                    <i data-lucide="hotel" class="w-5 h-5"></i> 住宿清單
-                </h2>
-                <div class="space-y-4 text-[11px]">
-                    <div v-for="h in hotels" class="border-b last:border-0 pb-2">
-                        <p class="font-bold text-slate-800">{{ h.name }}</p>
-                        <p class="text-slate-400">{{ h.address }}</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section v-if="activeTab === 'expense'" class="px-6 py-6">
-            <div class="bg-okinawa-blue text-white p-6 rounded-3xl mb-6 shadow-lg text-center">
-                <p class="text-[10px] opacity-70 uppercase tracking-widest font-bold">Total Expenses (JPY)</p>
-                <h2 class="text-4xl font-times font-bold mt-1">¥ {{ totalExpense.toLocaleString() }}</h2>
-            </div>
-            
-            <div class="space-y-3">
-                <div v-for="exp in expenses" :key="exp.id" @click="openEditExp(exp)" class="bg-white p-4 rounded-2xl border flex justify-between items-center shadow-sm">
-                    <div class="flex items-center gap-3">
-                        <div class="p-2 bg-slate-50 rounded-full text-slate-400">
-                            <i :data-lucide="getExpIcon(exp.category)" class="w-4 h-4"></i>
-                        </div>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-start">
                         <div>
-                            <p class="font-bold text-xs">{{ exp.name }}</p>
-                            <p class="text-[10px] text-slate-400">{{ exp.date }} · {{ exp.payment }}</p>
+                            <p class="text-2xl font-black text-slate-800">FLIGHT RENTACAR</p>
+                            <p class="text-lg mt-1">預定編號：<span class="font-times font-bold select-all">r01722661</span></p>
+                        </div>
+                        <button @click="openNav('FLIGHT RENTACAR')" class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center"><i data-lucide="navigation"></i></button>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-2xl space-y-2">
+                        <p class="text-base">📅 租：5/1 08:00</p>
+                        <p class="text-base">📅 還：5/3 19:00</p>
+                    </div>
+                    <div class="p-4 bg-amber-50 rounded-2xl text-amber-800 border border-amber-100">
+                        <p class="font-bold">⚠️ 應備證件：</p>
+                        <p class="text-base">護照、駕照正本、日文譯本</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white border-2 border-slate-100 rounded-[2rem] p-6 shadow-sm">
+                <h2 class="text-2xl font-black okinawa-blue flex items-center gap-3 mb-6">
+                    <i data-lucide="hotel" class="w-8 h-8"></i> 住宿安排
+                </h2>
+                <div class="space-y-8">
+                    <div v-for="h in hotels" class="relative pb-6 border-b last:border-0 last:pb-0">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-black text-slate-800 w-3/4">{{ h.name }}</h3>
+                            <button @click="openNav(h.address)" class="text-blue-600"><i data-lucide="navigation" class="w-7 h-7"></i></button>
+                        </div>
+                        <p class="text-base text-slate-500 mb-3">{{ h.address }}</p>
+                        <div class="flex gap-4 text-sm font-bold text-slate-600 mb-4">
+                            <span>🕒 入住: {{ h.checkIn }}</span>
+                            <span>🕒 退房: {{ h.checkOut }}</span>
+                        </div>
+                        <div v-if="h.note || h.link" class="bg-sky-50 p-4 rounded-2xl">
+                            <p v-if="h.note" class="text-base text-sky-800 font-bold mb-2">📝 {{ h.note }}</p>
+                            <a v-if="h.link" :href="h.link" target="_blank" class="text-blue-600 font-bold underline flex items-center gap-1">
+                                <i data-lucide="external-link" class="w-4 h-4"></i> 開啟住宿確認頁面
+                            </a>
                         </div>
                     </div>
-                    <p class="font-bold okinawa-blue font-times">¥{{ exp.amount }}</p>
                 </div>
             </div>
-
-            <button @click="openAddExp" class="fixed bottom-10 right-6 w-14 h-14 bg-okinawa-blue text-white rounded-full shadow-2xl flex items-center justify-center">
-                <i data-lucide="plus" class="w-7 h-7"></i>
-            </button>
         </section>
-
     </main>
-
-    <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-end justify-center">
-        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" @click="showEditModal = false"></div>
-        <div class="bg-white w-full rounded-t-[2.5rem] p-8 relative animate-slide-up">
-            <h3 class="font-bold mb-6">編輯行程內容</h3>
-            <div class="space-y-4">
-                <input v-model="tempItem.title" placeholder="名稱" class="w-full border-b py-3 outline-none text-sm">
-                <textarea v-model="tempItem.note" placeholder="備註" class="w-full border-b py-3 outline-none text-sm resize-none"></textarea>
-                <button @click="showEditModal = false" class="w-full py-4 bg-okinawa-blue text-white rounded-2xl font-bold shadow-lg mt-4">儲存變更</button>
-                <button @click="confirmDelete" class="w-full py-2 text-red-400 text-xs font-bold">刪除行程 (僅演示)</button>
-            </div>
-        </div>
-    </div>
-
-    <div v-if="showExpModal" class="fixed inset-0 z-50 flex items-end justify-center">
-        <div class="absolute inset-0 bg-black/40" @click="showExpModal = false"></div>
-        <div class="bg-white w-full rounded-t-[2.5rem] p-8 relative">
-            <h3 class="font-bold mb-6">{{ isEditingExp ? '編輯花費' : '新增花費' }}</h3>
-            <div class="space-y-4 text-sm">
-                <input v-model="tempExp.name" placeholder="花費項目名稱" class="w-full border-b py-2 outline-none">
-                <input v-model.number="tempExp.amount" type="number" placeholder="金額 (JPY)" class="w-full border-b py-2 outline-none font-times">
-                <div class="flex gap-4">
-                    <label class="flex items-center gap-1"><input type="radio" value="現金" v-model="tempExp.payment"> 現金</label>
-                    <label class="flex items-center gap-1"><input type="radio" value="信用卡" v-model="tempExp.payment"> 信用卡</label>
-                </div>
-                <div class="flex gap-3 pt-4">
-                    <button v-if="isEditingExp" @click="deleteExp" class="flex-1 py-4 bg-red-50 text-red-500 rounded-2xl font-bold">刪除</button>
-                    <button @click="saveExp" class="flex-[2] py-4 bg-okinawa-blue text-white rounded-2xl font-bold">確認儲存</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </div>
 
 <script>
@@ -241,9 +198,6 @@ createApp({
     setup() {
         const activeTab = ref('itinerary');
         const selectedDay = ref('4/30');
-        const showEditModal = ref(false);
-        const showExpModal = ref(false);
-        const isEditingExp = ref(false);
 
         const days = [
             { date: '4/30', dateShort: '4/30', weekday: '四' },
@@ -253,117 +207,73 @@ createApp({
             { date: '5/4', dateShort: '5/4', weekday: '一' },
         ];
 
-        // 完整錄入行程資料
+        // 核心行程數據
         const itineraries = ref([
             // 4/30
-            { id: 1, day: '4/30', type: 'flight-up', arrivalTime: '16:00', title: 'TPE', note: '抵達桃園機場' },
-            { id: 2, day: '4/30', type: 'flight-down', arrivalTime: '20:50', title: 'OKA', note: '抵達那霸機場' },
-            { id: 3, day: '4/30', type: 'train', arrivalTime: '22:02', title: '單軌電車', note: '搭乘至旭橋站/每10分鐘一班' },
-            { id: 4, day: '4/30', type: 'hotel', arrivalTime: '22:30', title: '旭橋托麗芙特酒店', note: '附近有超商可以買宵夜', travelMode: 'walk', travelTimeLabel: '' },
+            { id: 1, day: '4/30', isFlightSummary: true, title: 'TPE → OKA', timeRange: '18:05 - 20:50', airline: '樂桃航空', flightNo: 'MM930' },
+            { id: 2, day: '4/30', type: 'flight', arrivalTime: '16:00', title: '桃園國際機場', note: '' },
+            { id: 3, day: '4/30', type: 'train', arrivalTime: '22:02', title: '單軌電車那霸機場站', note: '搭乘至旭橋站(每10分鐘一班)' },
+            { id: 4, day: '4/30', type: 'hotel', arrivalTime: '22:30', title: '旭橋托麗芙特酒店', note: '附近有超商可以買宵夜和隔天早餐' },
 
             // 5/1
-            { id: 5, day: '5/1', type: 'train', arrivalTime: '07:47', title: '單軌電車', note: '搭乘至小祿站' },
-            { id: 6, day: '5/1', type: 'car', arrivalTime: '08:00', title: '租車', note: 'FLIGHT RENTACAR' },
-            { id: 7, day: '5/1', type: 'attraction', arrivalTime: '09:00', title: '波上宮', note: '可停波之上立體停車場' },
-            { id: 8, day: '5/1', type: 'attraction', arrivalTime: '10:15', title: '首里城、玉陵', note: '世界文化遺產', travelMode: 'car', travelTimeLabel: '16分鐘' },
-            { id: 9, day: '5/1', type: 'food', arrivalTime: '12:00', title: 'みるく世果報', note: '琉球料理認証店', travelMode: 'car', travelTimeLabel: '3分鐘' },
-            { id: 10, day: '5/1', type: 'attraction', arrivalTime: '13:00', title: '西來院達摩寺', note: '求願祈福', travelMode: 'car', travelTimeLabel: '20分鐘' },
-            { id: 11, day: '5/1', type: 'attraction', arrivalTime: '14:20', title: '玉泉洞', note: '文化王國', travelMode: 'car', travelTimeLabel: '50分鐘' },
-            { id: 12, day: '5/1', type: 'hotel', arrivalTime: '17:00', title: 'Mondomio Resort', note: '辦理入住' },
-            { id: 13, day: '5/1', type: 'shopping', arrivalTime: '18:00', title: 'AEON 永旺夢樂城', note: '吃晚餐與購物', travelMode: 'walk', travelTimeLabel: '2分鐘' },
+            { id: 5, day: '5/1', type: 'train', arrivalTime: '07:47', title: '單軌電車旭橋站', note: '搭乘至小祿站' },
+            { id: 6, day: '5/1', type: 'car', arrivalTime: '08:00', title: 'FLIGHT RENTACAR', note: '租車' },
+            { id: 7, day: '5/1', type: 'attraction', arrivalTime: '09:00', title: '波上宮', note: '可停波之上立體停車場', travelTime: '車程16分鐘', travelIcon: 'car' },
+            { id: 8, day: '5/1', type: 'attraction', arrivalTime: '10:15', title: '首里城', note: '' },
+            { id: 9, day: '5/1', type: 'attraction', arrivalTime: '11:15', title: '玉陵', note: '', travelTime: '車程3分鐘', travelIcon: 'car' },
+            { id: 10, day: '5/1', type: 'food', arrivalTime: '12:00', title: 'みるく世果報', note: '營業時間：11:30-15:00' },
+            { id: 11, day: '5/1', type: 'attraction', arrivalTime: '13:00', title: '西來院達摩寺', note: '', travelTime: '車程20分鐘', travelIcon: 'car' },
+            { id: 12, day: '5/1', type: 'attraction', arrivalTime: '14:20', title: '玉泉洞', note: '', travelTime: '車程50分鐘', travelIcon: 'car' },
+            { id: 13, day: '5/1', type: 'hotel', arrivalTime: '17:00', title: 'Mondomio Okinawa Resort', note: '', travelTime: '走路2分鐘', travelIcon: 'walking' },
+            { id: 14, day: '5/1', type: 'shopping', arrivalTime: '18:00', title: 'AEON永旺夢樂城', note: 'mont-bell、吃晚餐' },
 
             // 5/2
-            { id: 14, day: '5/2', type: 'attraction', arrivalTime: '08:30', title: '連勝城遺址', note: '壯觀古城牆' },
-            { id: 15, day: '5/2', type: 'attraction', arrivalTime: '10:10', title: '古宇利大橋、心型岩', note: '絕美海景', travelMode: 'car', travelTimeLabel: '70分鐘' },
-            { id: 16, day: '5/2', type: 'food', arrivalTime: '11:30', title: '古宇利蝦蝦飯', note: '當地人氣美食' },
-            { id: 17, day: '5/2', type: 'other', arrivalTime: '12:45', title: 'Shinmei Coffee', note: '黑糖拿鐵', travelMode: 'car', travelTimeLabel: '13分鐘' },
-            { id: 18, day: '5/2', type: 'attraction', arrivalTime: '13:00', title: '美麗海水族館', note: '可停P6停車場', travelMode: 'car', travelTimeLabel: '15分鐘' },
-            { id: 19, day: '5/2', type: 'attraction', arrivalTime: '16:00', title: '萬座毛', note: '象鼻岩', travelMode: 'car', travelTimeLabel: '60分鐘' },
-            { id: 20, day: '5/2', type: 'attraction', arrivalTime: '17:00', title: '殘波岬', note: '斷崖美景', travelMode: 'car', travelTimeLabel: '30分鐘' },
-            { id: 21, day: '5/2', type: 'hotel', arrivalTime: '18:00', title: 'Luana', note: '辦理入住', travelMode: 'car', travelTimeLabel: '35分鐘' },
-            { id: 22, day: '5/2', type: 'food', arrivalTime: '18:30', title: '暖暮拉麵', note: '人氣拉麵' },
-            { id: 23, day: '5/2', type: 'attraction', arrivalTime: '20:00', title: '美國村', note: '煙火、特色美食小店', travelMode: 'car', travelTimeLabel: '6分鐘' },
+            { id: 15, day: '5/2', type: 'attraction', arrivalTime: '08:30', title: '連勝城遺址', note: '', travelTime: '車程70分鐘', travelIcon: 'car' },
+            { id: 16, day: '5/2', type: 'attraction', arrivalTime: '10:10', title: '古宇利大橋', note: '' },
+            { id: 17, day: '5/2', type: 'attraction', arrivalTime: '10:30', title: '海洋塔', note: '' },
+            { id: 18, day: '5/2', type: 'attraction', arrivalTime: '11:00', title: '心型岩', note: '' },
+            { id: 19, day: '5/2', type: 'food', arrivalTime: '11:30', title: '古宇利蝦蝦飯', note: '營業時間：11:00-16:00', travelTime: '車程13分鐘', travelIcon: 'car' },
+            { id: 20, day: '5/2', type: 'cup', arrivalTime: '12:45', title: 'Shinmei Coffee', note: '黑糖拿鐵 / 10:00-16:30', travelTime: '車程15分鐘', travelIcon: 'car' },
+            { id: 21, day: '5/2', type: 'attraction', arrivalTime: '13:00', title: '美麗海水族館', note: '可停P6', travelTime: '車程60分鐘', travelIcon: 'car' },
+            { id: 22, day: '5/2', type: 'attraction', arrivalTime: '16:00', title: '萬座毛', note: '', travelTime: '車程30分鐘', travelIcon: 'car' },
+            { id: 23, day: '5/2', type: 'attraction', arrivalTime: '17:00', title: '殘波岬', note: '', travelTime: '車程35分鐘', travelIcon: 'car' },
+            { id: 24, day: '5/2', type: 'hotel', arrivalTime: '18:00', title: 'Condominium Luana', note: '' },
+            { id: 25, day: '5/2', type: 'food', arrivalTime: '18:30', title: '暖暮拉麵 北谷砂邊店', note: '營業時間：11:00-00:00', travelTime: '車程6分鐘', travelIcon: 'car' },
+            { id: 26, day: '5/2', type: 'attraction', arrivalTime: '20:00', title: '美國村', note: '看煙火、各種特色美食' },
 
             // 5/3
-            { id: 24, day: '5/3', type: 'food', arrivalTime: '10:00', title: '浜屋沖繩麵', note: '傳統風味' },
-            { id: 25, day: '5/3', type: 'shopping', arrivalTime: '11:30', title: 'Parco City', note: '購物商場', travelMode: 'car', travelTimeLabel: '35分鐘' },
-            { id: 26, day: '5/3', type: 'attraction', arrivalTime: '15:00', title: '護國神社、沖宮', note: '祈福', travelMode: 'car', travelTimeLabel: '25分鐘' },
-            { id: 27, day: '5/3', type: 'hotel', arrivalTime: '17:00', title: '琉球Orion飯店', note: '國際通上', travelMode: 'car', travelTimeLabel: '15分鐘' },
-            { id: 28, day: '5/3', type: 'car', arrivalTime: '19:00', title: '還車', note: 'FLIGHT RENTACAR', travelMode: 'car', travelTimeLabel: '20分鐘' },
-            { id: 29, day: '5/3', type: 'train', arrivalTime: '19:30', title: '單軌電車', note: '搭至旭橋站' },
-            { id: 30, day: '5/3', type: 'shopping', arrivalTime: '20:00', title: '國際通', note: '購物血拼' },
+            { id: 27, day: '5/3', type: 'food', arrivalTime: '10:00', title: '浜屋沖繩麵', note: '營業時間：10:00-17:30', travelTime: '車程35分鐘', travelIcon: 'car' },
+            { id: 28, day: '5/3', type: 'shopping', arrivalTime: '11:30', title: 'Parco City', note: '', travelTime: '車程25分鐘', travelIcon: 'car' },
+            { id: 29, day: '5/3', type: 'attraction', arrivalTime: '15:00', title: '護國神社', note: '' },
+            { id: 30, day: '5/3', type: 'attraction', arrivalTime: '15:30', title: '沖宮神社', note: '', travelTime: '車程15分鐘', travelIcon: 'car' },
+            { id: 31, day: '5/3', type: 'hotel', arrivalTime: '17:00', title: '琉球Orion那霸國際通飯店', note: '', travelTime: '車程20分鐘', travelIcon: 'car' },
+            { id: 32, day: '5/3', type: 'car', arrivalTime: '19:00', title: 'FLIGHT RENTACAR', note: '還車' },
+            { id: 33, day: '5/3', type: 'train', arrivalTime: '19:30', title: '單軌電車小路站', note: '搭乘至旭橋站' },
+            { id: 34, day: '5/3', type: 'shopping', arrivalTime: '20:00', title: '國際通', note: '' },
 
             // 5/4
-            { id: 31, day: '5/4', type: 'train', arrivalTime: '05:40', title: '單軌電車', note: '搭至機場站' },
-            { id: 32, day: '5/4', type: 'flight-up', arrivalTime: '05:57', title: 'OKA', note: '抵達那霸機場' },
-            { id: 33, day: '5/4', type: 'flight-down', arrivalTime: '08:45', title: 'TPE', note: '抵達桃園機場' },
+            { id: 35, day: '5/4', type: 'train', arrivalTime: '05:40', title: '單軌電車牧志站', note: '搭乘至那霸機場站' },
+            { id: 36, day: '5/4', type: 'flight', arrivalTime: '05:57', title: '那霸機場', note: '' },
+            { id: 37, day: '5/4', isFlightSummary: true, title: 'OKA → TPE', timeRange: '08:10 - 08:45', airline: '樂桃航空', flightNo: 'MM921' },
         ]);
 
         const filteredItinerary = computed(() => itineraries.value.filter(i => i.day === selectedDay.value));
 
         const hotels = [
-            { name: '那霸旭橋托麗芙特酒店', address: '沖繩, 那霸, Nishi 1-11-19' },
-            { name: 'Mondomio Okinawa Resort', address: '沖繩, 北中城村, ライカム 1107' },
-            { name: 'Condominium Luana', address: '沖繩, 北谷町, Miyagi 2-113' },
-            { name: '琉球Orion那霸國際通飯店', address: '沖繩, 那霸, Asato 1-2-21' }
+            { name: '那霸旭橋托麗芙特酒店', address: '沖繩, 那霸, Nishi 1-11-19', checkIn: '14:00', checkOut: '11:00' },
+            { name: 'Mondomio Okinawa Resort Rycom Hills', address: '沖繩, 北中城村, ライカム 1107', checkIn: '16:00', checkOut: '10:00', note: '37號停車位', link: 'https://connect.minpakuin.jp/register/AAABUl2MTN-2izIIBsG17TdzdkJah8S71LE' },
+            { name: 'Condominium Luana', address: '沖繩, 北谷町, Miyagi 2-113', checkIn: '15:00', checkOut: '10:00', link: 'https://www.onestayapp.com/s/xMkf7Bk' },
+            { name: '琉球Orion那霸國際通飯店', address: '沖繩, 那霸, Asato 1-2-21', checkIn: '15:00', checkOut: '11:00' }
         ];
 
-        const expenses = ref([
-            { id: 1, name: '暖暮拉麵', amount: 1300, category: 'food', payment: '現金', date: '5/2' },
-            { id: 2, name: '美麗海水族館門票', amount: 2180, category: 'ticket', payment: '信用卡', date: '5/2' }
-        ]);
-
-        const totalExpense = computed(() => expenses.value.reduce((s, i) => s + i.amount, 0));
-
         const getIcon = (type) => {
-            const map = { attraction: 'camera', hotel: 'bed', food: 'utensils', shopping: 'shopping-basket', 'flight-up': 'plane-takeoff', 'flight-down': 'plane-landing', car: 'car', train: 'train', other: 'more-horizontal' };
+            const map = { attraction: 'camera', hotel: 'bed', food: 'utensils', shopping: 'shopping-basket', flight: 'plane', car: 'car', train: 'train', cup: 'coffee', other: 'more-horizontal' };
             return map[type] || 'circle';
         };
 
-        const getExpIcon = (cat) => {
-            const map = { food: 'utensils', transport: 'car', shopping: 'shopping-basket', ticket: 'ticket' };
-            return map[cat] || 'coins';
-        };
-
-        const tempItem = ref({});
-        const openEditModal = (item) => {
-            tempItem.value = { ...item };
-            showEditModal.value = true;
-        };
-
-        const confirmDelete = () => {
-            if(confirm('確定要刪除行程嗎？')) { showEditModal.value = false; }
-        };
-
-        const tempExp = ref({});
-        const openAddExp = () => {
-            isEditingExp.value = false;
-            tempExp.value = { name: '', amount: null, payment: '現金', date: selectedDay.value, category: 'food' };
-            showExpModal.value = true;
-        };
-
-        const openEditExp = (exp) => {
-            isEditingExp.value = true;
-            tempExp.value = { ...exp };
-            showExpModal.value = true;
-        };
-
-        const saveExp = () => {
-            if(!tempExp.value.name || !tempExp.value.amount) return;
-            if(isEditingExp.value) {
-                const idx = expenses.value.findIndex(e => e.id === tempExp.value.id);
-                expenses.value[idx] = { ...tempExp.value };
-            } else {
-                expenses.value.push({ ...tempExp.value, id: Date.now() });
-            }
-            showExpModal.value = false;
-        };
-
-        const deleteExp = () => {
-            if(confirm('確定要刪除此筆花費？')) {
-                expenses.value = expenses.value.filter(e => e.id !== tempExp.value.id);
-                showExpModal.value = false;
-            }
+        const getIconBg = (type) => {
+            const map = { attraction: 'bg-green-500', hotel: 'bg-purple-500', food: 'bg-red-500', shopping: 'bg-sky-400', flight: 'bg-blue-800', car: 'bg-slate-500', train: 'bg-slate-500', cup: 'bg-orange-400' };
+            return map[type] || 'bg-slate-400';
         };
 
         const openNav = (title) => {
@@ -371,24 +281,20 @@ createApp({
         };
 
         onMounted(() => { lucide.createIcons(); });
-        watch([activeTab, selectedDay, showEditModal, showExpModal], () => { nextTick(() => lucide.createIcons()); });
+        watch([activeTab, selectedDay], () => { nextTick(() => lucide.createIcons()); });
 
-        return {
-            activeTab, selectedDay, days, itineraries, filteredItinerary, hotels,
-            expenses, totalExpense, getIcon, getExpIcon, openNav,
-            showEditModal, tempItem, openEditModal, confirmDelete,
-            showExpModal, isEditingExp, tempExp, openAddExp, openEditExp, saveExp, deleteExp
-        };
+        return { activeTab, selectedDay, days, filteredItinerary, hotels, getIcon, getIconBg, openNav };
     }
 }).mount('#app');
 </script>
 
 <style>
-@keyframes slide-up {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
+/* 滑動動畫 */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
-.animate-slide-up { animation: slide-up 0.3s ease-out; }
+section { animation: fadeInUp 0.4s ease-out; }
 </style>
 </body>
 </html>
