@@ -35,8 +35,7 @@
             box-shadow: 0 8px 20px -5px rgba(7, 89, 133, 0.3);
         }
 
-        /* 虛線箭頭：與文字對齊 */
-        .dashed-arrow-box { display: flex; align-items: center; width: 50px; margin-bottom: 24px; }
+        .dashed-arrow-box { display: flex; align-items: center; width: 50px; }
         .dashed-arrow-line { flex-grow: 1; border-top: 2px dashed rgba(255,255,255,0.4); position: relative; }
         .dashed-arrow-line::after { content: ''; position: absolute; right: -2px; top: -5px; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 8px solid white; }
 
@@ -44,7 +43,7 @@
         .travel-icon-box { position: absolute; left: -14px; top: 50%; transform: translateY(-50%); background: white; padding: 2px; }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .nav-btn { box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); border: 1px solid #f0f0f0; transition: transform 0.1s; }
+        .nav-btn { box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); border: 1px solid #f0f0f0; transition: transform 0.1s; background: white; }
         .nav-btn:active { transform: scale(0.9); }
     </style>
 </head>
@@ -72,6 +71,7 @@
 
     <main class="flex-grow">
         <transition name="page-fade" mode="out-in">
+            
             <section v-if="activeTab === 'itinerary'" key="itinerary">
                 <div class="flex overflow-x-auto py-6 px-4 gap-4 no-scrollbar bg-sky-50/20 border-b border-sky-50">
                     <div v-for="day in days" :key="day.date" 
@@ -85,6 +85,7 @@
 
                 <div class="px-4 mt-5 pb-10">
                     <div v-for="(item, index) in filteredItinerary" :key="index">
+                        
                         <div v-if="item.isFlightSummary" class="flight-card-bg p-6 rounded-[2.2rem] text-white my-5">
                             <div class="flex justify-between items-center mb-4 opacity-70 text-[10px] font-bold tracking-widest uppercase">
                                 <span>{{ item.airline }}</span>
@@ -107,16 +108,18 @@
 
                         <div v-else class="bg-white border border-slate-100 rounded-[1.8rem] p-4 mb-1 shadow-sm flex items-center gap-3">
                             <div class="flex flex-col items-center min-w-[70px] border-r border-slate-50 pr-2 shrink-0">
-                                <div :class="getIconBg(item.type)" class="p-2.5 rounded-xl mb-1 shadow-sm scale-95">
+                                <div :class="getIconBg(item.type)" class="p-2.5 rounded-xl mb-1 shadow-sm">
                                     <i :data-lucide="getIcon(item.type)" class="w-6 h-6 text-white"></i>
                                 </div>
-                                <span class="text-sm font-times font-black text-slate-500">{{ item.arrivalTime }}</span>
+                                <span class="text-xs font-times font-black text-slate-500">{{ item.arrivalTime }}</span>
                             </div>
+                            
                             <div class="flex-grow min-w-0">
                                 <h3 class="text-[0.95rem] font-black text-slate-800 leading-tight truncate">{{ item.title }}</h3>
-                                <p v-if="item.note" class="text-[0.85rem] text-slate-500 mt-1 font-medium leading-snug">{{ item.note }}</p>
+                                <p v-if="item.note" class="text-[0.8rem] text-slate-500 mt-1 font-medium leading-snug">{{ item.note }}</p>
                             </div>
-                            <button @click="openNav(item.title)" class="nav-btn w-10 h-10 rounded-full bg-white flex items-center justify-center text-sky-500 shrink-0">
+
+                            <button @click="openNav(item.title)" class="nav-btn w-10 h-10 rounded-full flex items-center justify-center text-sky-500 shrink-0">
                                 <i data-lucide="navigation" class="w-5 h-5"></i>
                             </button>
                         </div>
@@ -133,7 +136,9 @@
 
             <section v-else key="info" class="px-5 py-6 space-y-8 pb-20">
                 <div class="bg-white border border-sky-100 rounded-[2rem] p-6 shadow-sm">
-                    <h2 class="text-xl font-black text-sky-600 flex items-center gap-2 mb-4 border-b pb-3"><i data-lucide="plane-takeoff" class="w-6 h-6"></i> 航班資訊</h2>
+                    <h2 class="text-xl font-black text-sky-600 flex items-center gap-2 mb-4 border-b pb-3">
+                        <i data-lucide="plane-takeoff" class="w-6 h-6"></i> 航班資訊
+                    </h2>
                     <div class="space-y-4">
                         <div v-for="f in flightData" class="bg-slate-50 p-4 rounded-2xl border-l-4 border-sky-400">
                             <p class="text-[10px] text-slate-400 font-bold mb-1 tracking-widest">{{ f.direction }} · {{ f.date }}</p>
@@ -144,13 +149,15 @@
                 </div>
 
                 <div class="bg-white border border-sky-100 rounded-[2rem] p-6 shadow-sm">
-                    <h2 class="text-xl font-black text-sky-600 flex items-center gap-2 mb-4 border-b pb-3"><i data-lucide="key" class="w-6 h-6"></i> 租車資訊</h2>
+                    <h2 class="text-xl font-black text-sky-600 flex items-center gap-2 mb-4 border-b pb-3">
+                        <i data-lucide="key" class="w-6 h-6"></i> 租車資訊
+                    </h2>
                     <div class="flex justify-between items-start mb-4">
                         <div>
                             <p class="font-black text-lg text-slate-800">{{ rentalData.name }}</p>
                             <p class="text-xs font-bold text-slate-400 mt-1">預定編號：<span class="font-times text-sky-600">{{ rentalData.id }}</span></p>
                         </div>
-                        <button @click="openNav(rentalData.name)" class="nav-btn w-11 h-11 rounded-full bg-white flex items-center justify-center text-sky-500">
+                        <button @click="openNav(rentalData.name)" class="nav-btn w-11 h-11 rounded-full flex items-center justify-center text-sky-500">
                             <i data-lucide="navigation" class="w-5 h-5"></i>
                         </button>
                     </div>
@@ -162,12 +169,16 @@
                 </div>
 
                 <div class="bg-white border border-sky-100 rounded-[2rem] p-6 shadow-sm">
-                    <h2 class="text-xl font-black text-sky-600 flex items-center gap-2 mb-4 border-b pb-3"><i data-lucide="bed" class="w-6 h-6"></i> 住宿飯店</h2>
+                    <h2 class="text-xl font-black text-sky-600 flex items-center gap-2 mb-4 border-b pb-3">
+                        <i data-lucide="bed" class="w-6 h-6"></i> 住宿飯店
+                    </h2>
                     <div class="space-y-8">
                         <div v-for="h in hotelData" class="pb-6 border-b border-slate-50 last:border-0 last:pb-0">
                             <div class="flex justify-between items-start mb-3">
-                                <h3 class="font-black text-slate-800 text-[1.05rem] w-[75%] leading-tight"><i data-lucide="map-pin-house" class="w-4 h-4 inline mr-1 text-sky-300"></i> {{ h.name }}</h3>
-                                <button @click="openNav(h.address)" class="nav-btn w-10 h-10 rounded-full bg-white flex items-center justify-center text-sky-500 shrink-0">
+                                <h3 class="font-black text-slate-800 text-[1.05rem] w-[75%] leading-tight">
+                                    <i data-lucide="map-pin-house" class="w-4 h-4 inline mr-1 text-sky-400"></i> {{ h.name }}
+                                </h3>
+                                <button @click="openNav(h.address)" class="nav-btn w-10 h-10 rounded-full flex items-center justify-center text-sky-500 shrink-0">
                                     <i data-lucide="navigation" class="w-5 h-5"></i>
                                 </button>
                             </div>
@@ -189,7 +200,7 @@
 </div>
 
 <script>
-const { createApp, ref, computed, onMounted, nextTick, watch, updated } = Vue;
+const { createApp, ref, computed, onMounted, nextTick, watch } = Vue;
 
 createApp({
     setup() {
@@ -239,7 +250,7 @@ createApp({
             { day: '5/3', type: 'attraction', arrivalTime: '15:00', title: '護國神社' },
             { day: '5/3', type: 'attraction', arrivalTime: '15:30', title: '沖宮神社', travelTime: '車程15分鐘', travelIcon: 'car' },
             { day: '5/3', type: 'hotel', arrivalTime: '17:00', title: '琉球Orion那霸國際通飯店', travelTime: '車程20分鐘', travelIcon: 'car' },
-            { day: '5/3', type: 'car', arrivalTime: '19:00', title: '還車: FLIGHT RENTACAR' },
+            { day: '5/3', type: 'car', arrivalTime: '19:00', title: 'FLIGHT RENTACAR' },
             { day: '5/3', type: 'train', arrivalTime: '19:30', title: '單軌電車小祿站' },
             { day: '5/3', type: 'shopping', arrivalTime: '20:00', title: '國際通' },
 
