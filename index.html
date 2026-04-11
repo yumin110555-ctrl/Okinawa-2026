@@ -129,9 +129,7 @@
 
             <section v-else key="info" class="px-6 py-8 space-y-8 pb-20">
                 <div class="bg-white border border-sky-100 rounded-[2.5rem] p-7 shadow-sm">
-                    <h2 class="text-2xl font-black text-sky-600 flex items-center gap-3 mb-6">
-                        <i data-lucide="plane" class="w-8 h-8"></i> 航班資訊
-                    </h2>
+                    <h2 class="text-2xl font-black text-sky-600 mb-6 text-left">航班資訊</h2>
                     <div class="space-y-4">
                         <div v-for="f in flightData" class="bg-slate-50 p-5 rounded-3xl border-l-8 border-sky-400">
                             <p class="text-sm text-slate-400 font-bold mb-2 tracking-widest">{{ f.direction }} · {{ f.date }}</p>
@@ -142,9 +140,7 @@
                 </div>
 
                 <div class="bg-white border border-sky-100 rounded-[2.5rem] p-7 shadow-sm">
-                    <h2 class="text-2xl font-black text-sky-600 flex items-center gap-3 mb-6">
-                        <i data-lucide="car" class="w-8 h-8"></i> 租車資訊
-                    </h2>
+                    <h2 class="text-2xl font-black text-sky-600 mb-6 text-left">租車資訊</h2>
                     <div class="mb-4">
                         <p class="font-black text-2xl text-slate-800">FLIGHT RENTACAR</p>
                         <p class="text-lg font-bold text-slate-500">編號：<span class="font-times select-all">{{ rentalData.id }}</span></p>
@@ -157,9 +153,7 @@
                 </div>
 
                 <div class="bg-white border border-sky-100 rounded-[2.5rem] p-7 shadow-sm">
-                    <h2 class="text-2xl font-black text-sky-600 flex items-center gap-3 mb-6">
-                        <i data-lucide="hotel" class="w-8 h-8"></i> 住宿資訊
-                    </h2>
+                    <h2 class="text-2xl font-black text-sky-600 mb-6 text-left">住宿資訊</h2>
                     <div class="space-y-10">
                         <div v-for="h in hotelData" class="pb-8 border-b border-slate-100 last:border-0 last:pb-0">
                             <h3 class="font-black text-slate-800 text-2xl mb-2 leading-tight">{{ h.name }}</h3>
